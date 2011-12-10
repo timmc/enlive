@@ -261,6 +261,17 @@
   (is (= "<h1>hello&lt;<script>if (im < bad) document.write('&lt;')</script></h1>"
         (sniptest "<h1>hello&lt;<script>if (im < bad) document.write('&lt;')"))))
 
+(deftest self-close-test
+  (let [in {:tag :link, :attrs {:href "http://example.com/"}}
+        build #(apply str (emit* in))
+        out-def (build) ;; use defaults (to check backwards comaptibility)
+        out-xml (binding [*xml-style-self-close* true] (build))
+        out-html (binding [*xml-style-self-close* false] (build))]
+    (is (= out-def out-xml))
+    ;; don't rely on precise spacing, etc.
+    (is (= (.replaceAll out-xml "/>" ">")
+           out-html))))
+
 (deftest transform-content-test
   (is-same "<div><div class='bar'><div>"
     (sniptest "<div><div><div>"

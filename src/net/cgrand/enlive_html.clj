@@ -118,6 +118,15 @@
 
 (def self-closing-tags #{:area :base :basefont :br :hr :input :img :link :meta})
 
+(def ^{:dynamic true, :doc "If true, use a trailing slash in self-closing tags. Defaults to true for backwards compatibility."}
+  *xml-style-self-close*
+  true)
+
+(defn current-self-closer
+  "Get the current end token for self-closing tags: \" >\" or \" />\"."
+  []
+  (if *xml-style-self-close* " />" " >"))
+
 (declare emit)
 
 (defn- emit-attrs [attrs etc]
@@ -134,7 +143,7 @@
                 (mapknit (content-emitter name) s)
                 (cons ">")) 
               (if (self-closing-tags (:tag tag)) 
-                (cons " />" etc)
+                (cons (current-self-closer) etc)
                 (list* "></" name ">" etc)))
         etc (emit-attrs (:attrs tag) etc)]
     (list* "<" name etc)))
@@ -172,7 +181,7 @@
         open (str "<" name attrs-str ">")
         close (str "</" name ">")
         empty (if (self-closing-tags tag)
-                (str "<" name attrs-str " />")
+                (str "<" name attrs-str (current-self-closer))
                 (str open close))
         emit (content-emitter name)
         full (apply str (emit-tag node nil))]
