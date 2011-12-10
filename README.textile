@@ -16,7 +16,7 @@ h2. What's new in Enlive?
 
 (most recent first)
 
-Binding *xml-style-self-close* to false when emitting will use HTML-style
+Binding @*xml-style-self-close*@ to false when emitting will use HTML-style
 slash-less self-closing tags, e.g. &lt;img&gt; instead of &lt;img/&gt;.
 
 By default selector-transformation pairs are run sequentially. When you know
