@@ -262,15 +262,19 @@
         (sniptest "<h1>hello&lt;<script>if (im < bad) document.write('&lt;')"))))
 
 (deftest self-close-test
-  (let [in {:tag :link, :attrs {:href "http://example.com/"}}
-        build #(apply str (emit* in))
-        out-def (build) ;; use defaults (to check backwards comaptibility)
-        out-xml (binding [*xml-style-self-close* true] (build))
-        out-html (binding [*xml-style-self-close* false] (build))]
+  (let [self {:tag :link, :attrs {:href "http://example.com/"}}
+        non-self (assoc-in self [:tag] :a)
+        build #(apply str (emit* %))
+        out-def (build self) ;; use defaults (to check backwards comaptibility)
+        out-xml (binding [*xml-style-self-close* true] (build self))
+        out-html (binding [*xml-style-self-close* false] (build self))]
     (is (= out-def out-xml))
     ;; don't rely on precise spacing, etc.
     (is (= (.replaceAll out-xml "/>" ">")
-           out-html))))
+           out-html))
+    ;; no effect on non-self-closing tags
+    (is (= (binding [*xml-style-self-close* true] (build non-self))
+           (binding [*xml-style-self-close* false] (build non-self))))))
 
 (deftest transform-content-test
   (is-same "<div><div class='bar'><div>"
