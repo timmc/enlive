@@ -21,6 +21,7 @@ sequence will use HTML-style slash-less self-closing tags, e.g. &lt;img&gt;
 instead of &lt;img/&gt;.
 
 Example:
+
 <pre>
   (let [f (java.io.File. "some/example/file.html")]
     (binding [*xml-style-self-close* false]
@@ -33,12 +34,15 @@ optimization) to process them in lockstep. Note that this doesn't work with
 fragments selectors.
 
 Example:
+
 <pre>
   [:a :selector] a-transformation
   [:another :selector] another-transformation
   [:a :dependent :selector] yet-another-transformation
 </pre>
+
 If the first two tarnsformations are independent you can rewrite this code as:
+
 <pre>
   :lockstep
   {[:a :selector] a-transformation
