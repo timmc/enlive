@@ -118,7 +118,7 @@
 
 (def self-closing-tags #{:area :base :basefont :br :hr :input :img :link :meta})
 
-(def ^{:dynamic true, :doc "If true, use a trailing slash in self-closing tags. Defaults to true for backwards compatibility."}
+(def ^{:dynamic true, :doc "If true, use a trailing slash in self-closing tags. Defaults to true for backwards compatibility. Use in (binding) over any call to emit, such as template calls."}
   *xml-style-self-close*
   true)
 

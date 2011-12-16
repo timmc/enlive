@@ -16,8 +16,16 @@ h2. What's new in Enlive?
 
 (most recent first)
 
-Binding @*xml-style-self-close*@ to false when emitting will use HTML-style
-slash-less self-closing tags, e.g. &lt;img&gt; instead of &lt;img/&gt;.
+Binding @*xml-style-self-close*@ to false while realizing an emitted markup
+sequence will use HTML-style slash-less self-closing tags, e.g. &lt;img&gt;
+instead of &lt;img/&gt;.
+
+Example:
+<pre>
+  (let [f (java.io.File. "some/example/file.html")]
+    (binding [*xml-style-self-close* false]
+      (apply str (emit* (html-resource f)))))
+</pre>
 
 By default selector-transformation pairs are run sequentially. When you know
 that several transformations are independent, you can now specify (as an 

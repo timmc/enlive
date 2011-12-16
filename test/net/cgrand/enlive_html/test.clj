@@ -264,17 +264,17 @@
 (deftest self-close-test
   (let [self {:tag :link, :attrs {:href "http://example.com/"}}
         non-self (assoc-in self [:tag] :a)
-        build #(apply str (emit* %))
-        out-def (build self) ;; use defaults (to check backwards comaptibility)
-        out-xml (binding [*xml-style-self-close* true] (build self))
-        out-html (binding [*xml-style-self-close* false] (build self))]
-    (is (= out-def out-xml))
+        build #(binding [*xml-style-self-close* %2] (apply str (emit* %1)))
+        out-default (build self *xml-style-self-close*)
+        out-xml (build self true)
+        out-html (build self false)]
+    (is (= out-default out-xml))
     ;; don't rely on precise spacing, etc.
     (is (= (.replaceAll out-xml "/>" ">")
            out-html))
     ;; no effect on non-self-closing tags
-    (is (= (binding [*xml-style-self-close* true] (build non-self))
-           (binding [*xml-style-self-close* false] (build non-self))))))
+    (is (= (build non-self true)
+           (build non-self false)))))
 
 (deftest transform-content-test
   (is-same "<div><div class='bar'><div>"
